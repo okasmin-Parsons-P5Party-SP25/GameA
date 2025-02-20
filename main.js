@@ -1,4 +1,4 @@
-console.log("hello from main.js!");
+import { drawRectangle } from "./utils.js";
 
 let x = 200;
 let y = 200;
@@ -22,6 +22,10 @@ function setup() {
 
 function draw() {
 	background("pink");
+
+	drawRectangle();
+
+	fill("white");
 	ellipse(x, y, 50, 50);
 }
 
