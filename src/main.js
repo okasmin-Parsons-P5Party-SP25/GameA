@@ -1,35 +1,52 @@
-import { drawRectangle } from "./utils.js";
+let shared;
+let me;
+let guests;
 
-let x = 200;
-let y = 200;
+//delete this later just for testing
+function preload(){
+    partyConnect("wss://demoserver.p5party.org", "gameA_groupB");
 
-// https://github.com/jbakse/p5party_foundation/blob/main/src/js/main.js
-Object.assign(window, {
-	preload,
-	setup,
-	draw,
-	mouseClicked,
-});
+    shared = partyLoadShared("shared", {
+        grid:createGrid(500,500)
+    })
+    guests = partyLoadGuestShareds();
+    me = partyLoadMyShared({
+        gameState:0, //0 for started, 1 for key found, 2 for door opened
+    })
 
-function preload() {
-	// connect to p5 party server
 }
 
 function setup() {
 	createCanvas(500, 500);
 	noStroke();
+	background("white")
+	drawGrid(shared.grid)
 }
 
-function draw() {
-	background("pink");
+// function draw() {
+// 	background("pink");
 
-	drawRectangle();
+// 	drawRectangle();
 
-	fill("white");
-	ellipse(x, y, 50, 50);
-}
+// 	fill("white");
+// 	ellipse(x, y, 50, 50);
+// }
 
 function mouseClicked() {
 	x = mouseX;
 	y = mouseY;
+}
+function keyPressed(){
+    if(keyCode == UP_ARROW){
+        console.log('up')
+    }
+    if(keyCode == DOWN_ARROW){
+        console.log('down')
+    }
+    if(keyCode == LEFT_ARROW){
+        console.log('left')
+    }
+    if(keyCode == RIGHT_ARROW){
+        console.log('right')
+    }
 }

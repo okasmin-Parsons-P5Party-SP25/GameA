@@ -1,41 +1,19 @@
 
 const nPlayers = 2
-const playerColors = ['red', 'yellow']
+const playerColors = ['#EE4934', '#E6D040']
 
-let shared;
-let me;
-let guests;
 
-//delete this later just for testing
-function preload(){
-    partyConnect("wss://demoserver.p5party.org", "gameA_groupB");
+//constants
+const nRows = 10
+const nCols = 10
 
-    shared = partyLoadShared("shared", {
-        grid:createGrid(500,500)
-    })
-    guests = partyLoadGuestShareds();
-    me = partyLoadMyShared({
-        gameState:0, //0 for started, 1 for key found, 2 for door opened
-    })
 
-}
-function setup() {
-    console.log("set up")
-	createCanvas(500, 500);
-    background("white")
-    drawGrid()
-
-}
 
 
 /**
  * Creates the Grid structure
  */
 function createGrid(gridWidth,gridHeight){
-    //constants
-    const nRows = 6
-    const nCols = 6
-
     //cell sizes
     let w = gridWidth/nCols
     let h = gridHeight/nRows
@@ -120,13 +98,13 @@ function createGrid(gridWidth,gridHeight){
 /**
  * draws the grid and all its elements
  */
-function drawGrid(){
-    stroke('black')
-    for(const row of shared.grid){
+function drawGrid(grid){
+    stroke('white')
+    for(const row of grid){
         for(const entry of row){
             //background
             if(entry.type == 'grass'){
-                
+                fill('#BFD281')
             }
 
             //enabled status drawing
@@ -134,7 +112,6 @@ function drawGrid(){
                 fill('black')
                 rect(entry.x,entry.y,entry.w,entry.h)
             }else if(entry.enabled.every(e=> e==true)){
-                fill('green')
                 rect(entry.x,entry.y,entry.w,entry.h)
             }else{
                 for(let playerNum = 0; playerNum < nPlayers; playerNum ++){
@@ -162,24 +139,10 @@ function drawGrid(){
  * Return true if the grid entry is valid for the player to move to and false if it isnt
  * the grid entry is specified by the row, col index
  */
-function checkCellValid(playerIdx, rIdx, cIdx){
-    let entry = shared.grid[rIdx][cIdx]
+function checkCellValid(grid, playerIdx, rIdx, cIdx){
+    let entry = grid[rIdx][cIdx]
     return entry.enabled[playerIdx]
 }
 
 
-function keyPressed(){
-    if(keyCode == UP_ARROW){
-        console.log('up')
-    }
-    if(keyCode == DOWN_ARROW){
-        console.log('down')
-    }
-    if(keyCode == LEFT_ARROW){
-        console.log('left')
-    }
-    if(keyCode == RIGHT_ARROW){
-        console.log('right')
-    }
-}
 

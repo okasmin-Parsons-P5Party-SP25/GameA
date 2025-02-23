@@ -5,4 +5,4 @@ const drawRectangle = () => {
 	pop();
 };
 
-export { drawRectangle };
+// export { drawRectangle };
