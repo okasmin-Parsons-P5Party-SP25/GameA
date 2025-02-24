@@ -11,6 +11,8 @@ function preload(){
     })
     guests = partyLoadGuestShareds();
     me = partyLoadMyShared({
+		row:0, //current grid position
+		col:0, //current grid position
         gameState:0, //0 for started, 1 for key found, 2 for door opened
     })
 

@@ -21,9 +21,13 @@ function createGrid(gridWidth,gridHeight){
     //template states
     let all_enabled= []
     let all_disabled= []
-    for(let playerNum =0; playerNum < nPlayers; playerNum ++){
+    let playerPaths = []
+    for(let playerNum = 0; playerNum < nPlayers; playerNum ++){
         all_enabled.push(true)
         all_disabled.push(false)
+        let playerPath = makePath(nRows, nCols)
+        console.log("made path",playerPath)
+        playerPaths.push(playerPath)
     }
 
     //create the grid
@@ -32,17 +36,19 @@ function createGrid(gridWidth,gridHeight){
         let row = []
         for(let colNum = 0; colNum < nCols; colNum++){
             //set the enabled list to random right now
-            let rand_num = random()
-            let enabled_list = [...all_enabled]
-            if(rand_num>.8){
-                enabled_list = [...all_disabled]
-            }else if(rand_num<.5){
-                if(rand_num<.25){
-                    enabled_list[1] = false
-                }else{
-                    enabled_list[0] = false
-                } 
+            let enabled_list = [...all_disabled]
+            for(let playerNum = 0; playerNum < nPlayers; playerNum ++){
+            
+                for(let [px, py] of playerPaths[playerNum]){
+                    if(px == rowNum && py == colNum){
+                        enabled_list[playerNum] = true
+                        break
+                    }
+                }
             }
+            console.log("row, col", rowNum, colNum, enabled_list)
+            
+            
 
             let grid_entry = {
                 //position info
@@ -94,6 +100,7 @@ function createGrid(gridWidth,gridHeight){
         
     return grid
 }
+
 
 /**
  * draws the grid and all its elements
