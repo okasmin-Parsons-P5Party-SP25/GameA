@@ -1,4 +1,4 @@
-let allow_overlap_prob = .8
+let allow_overlap_prob = .3
 function makePath(num_rows,num_cols){
     function getNbrs(p){
       let nbrs = []

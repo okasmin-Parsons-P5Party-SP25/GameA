@@ -36,6 +36,8 @@ function createGrid(gridWidth,gridHeight){
         playerPaths.push(playerPath)
 
         //select a key location
+        let key = random(playerPath)
+        playerKeys.push(key)
     }
 
     //create the grid
@@ -45,15 +47,23 @@ function createGrid(gridWidth,gridHeight){
         for(let colNum = 0; colNum < nCols; colNum++){
             //set the enabled list to random right now
             let enabled_list = [...all_disabled]
+            let key = false
             for(let playerNum = 0; playerNum < nPlayers; playerNum ++){
-            
+        
                 for(let [px, py] of playerPaths[playerNum]){
                     if(px == rowNum && py == colNum){
                         enabled_list[playerNum] = true
                         break
                     }
                 }
+
+                //check if its a key
+                if(rowNum == playerKeys[playerNum][0] && colNum == playerKeys[playerNum][1]){
+                    key= playerNum
+                    console.log("KEY", rowNum, colNum)
+                }
             }
+
             
             
 
@@ -72,7 +82,7 @@ function createGrid(gridWidth,gridHeight){
                 "type": "grass",
 
                 //objects
-                "key": false, //the index of a player if it is and false otherwise
+                "key": key, //the index of a player if it is and false otherwise
 
                 'enabled':enabled_list,
             }
@@ -82,29 +92,6 @@ function createGrid(gridWidth,gridHeight){
         }
         grid.push(row)
     }
-
-
-    //set the key  to random right now
-    let existingKeys = []
-    for(let playerNum = 0; playerNum < nPlayers; playerNum ++){
-        let keyPlaced = false
-        let attempt_count = 0
-        // console.log("PLAYER NUM", playerNum)
-        while(!keyPlaced && attempt_count<5){
-            let rand_row = floor(random(nRows));
-            let rand_col = floor(random(nCols));
-            if(! existingKeys.includes(`${rand_row}${rand_col}`)){
-                grid[rand_row][rand_col].key = playerNum
-                existingKeys.push(`${rand_row}${rand_col}`)
-                keyPlaced = true
-            }
-            attempt_count++
-            
-
-        }
-    }
-    console.log("keys at:", existingKeys)
-        
     return grid
 }
 
@@ -138,8 +125,6 @@ function drawGrid(grid){
             }
 
             
-                
-
             if(entry.key!=false){
                 fill(playerColors[entry.key])
                 ellipse(entry.x + entry.w/2,entry.y + entry.h/2,10,10)    
