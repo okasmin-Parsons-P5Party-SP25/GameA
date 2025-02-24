@@ -4,8 +4,8 @@ const playerColors = ['#EE4934', '#E6D040']
 
 
 //constants
-const nRows = 10
-const nCols = 10
+const nRows = 20
+const nCols = 20
 
 
 
@@ -22,12 +22,20 @@ function createGrid(gridWidth,gridHeight){
     let all_enabled= []
     let all_disabled= []
     let playerPaths = []
+    let playerKeys = []
     for(let playerNum = 0; playerNum < nPlayers; playerNum ++){
         all_enabled.push(true)
         all_disabled.push(false)
         let playerPath = makePath(nRows, nCols)
-        console.log("made path",playerPath)
+
+        let tries = 0 
+        while(tries < 5 && playerPath.length < 2*nRows){
+            playerPath = makePath(nRows, nCols)
+            tries++
+        }
         playerPaths.push(playerPath)
+
+        //select a key location
     }
 
     //create the grid
@@ -46,7 +54,6 @@ function createGrid(gridWidth,gridHeight){
                     }
                 }
             }
-            console.log("row, col", rowNum, colNum, enabled_list)
             
             
 

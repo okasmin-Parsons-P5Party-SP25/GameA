@@ -1,3 +1,4 @@
+let allow_overlap_prob = .8
 function makePath(num_rows,num_cols){
     function getNbrs(p){
       let nbrs = []
@@ -23,7 +24,7 @@ function makePath(num_rows,num_cols){
     }
     
     //start the maze creation with a node in the top row
-    let p_col = floor(random(0,num_rows-1))
+    let p_col = 1
     let p =[p_col, 0]
   
     let path = [p]
@@ -33,7 +34,7 @@ function makePath(num_rows,num_cols){
       for(let nbr of nbrs){
         let nbr_nbrs = getNbrs(nbr)
         let overlap_bool = overlaps(nbr_nbrs, path)
-        if(!overlap_bool){
+        if(!overlap_bool || random()<allow_overlap_prob){
             noncycle_nbrs.push(nbr)
         }
   
