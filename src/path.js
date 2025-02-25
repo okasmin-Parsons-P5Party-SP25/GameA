@@ -1,4 +1,4 @@
-let allow_overlap_prob = 0.3;
+let allow_overlap_prob = 0.31;
 
 Object.assign(window, {
 	makePath,
