@@ -27,13 +27,13 @@ function createGrid() {
 	for (let playerNum = 0; playerNum < nPlayers; playerNum++) {
 		all_enabled.push(true);
 		all_disabled.push(false);
-		let playerPath = makePath(nRows, nCols,playerNum);
+		let playerPath = makePath(nRows, nCols, playerNum);
 
 		let tries = 0;
 		while (tries < 5 && playerPath.length < 2 * nRows) {
 			playerPath = makePath(nRows, nCols, playerNum);
 			tries++;
-			console.log('tries', tries)
+			console.log("tries", tries);
 		}
 		playerPaths.push(playerPath);
 
