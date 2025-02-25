@@ -1,4 +1,4 @@
-let allow_overlap_prob = 0.31;
+let allow_overlap_prob = 0;
 
 Object.assign(window, {
 	makePath,
@@ -7,7 +7,7 @@ Object.assign(window, {
 });
 
 function makePath(num_rows, num_cols, playerIdx) {
-  console.log(playerIdx)
+  let player_start_pos = [[0,0], [0,num_cols-2]]
 	function getNbrs(p) {
 		let nbrs = [];
 		let pcol = p[0];
@@ -32,13 +32,18 @@ function makePath(num_rows, num_cols, playerIdx) {
 
 	//start the maze creation with a node in the top row
 
-	let p = [0, 0];
+	let p = player_start_pos[0];
+  let colBoundary = [num_rows *3/4, num_rows]
   if(playerIdx == 1){
-    p = [0, num_cols-3];
+    p = player_start_pos[1]
+    colBoundary = [0,num_rows /4]
+    
   }
 
 	let path = [p];
-	while (p[1] < num_rows - 1 && p != undefined) {
+  //  (p[1]<colBoundary[0] || p[1]>colBoundary[1])
+
+	while (p[0] < num_rows - 1 && (p[1]<colBoundary[0] || p[1]>colBoundary[1])) {
 		//before the end is hit
 		let nbrs = getNbrs(p);
 		let noncycle_nbrs = [];
@@ -52,8 +57,10 @@ function makePath(num_rows, num_cols, playerIdx) {
 
 		//now select a random non cycle neightbor to add
 		if (noncycle_nbrs.length == 0) {
-			break;
+      noncycle_nbrs = nbrs
+			// break;
 		}
+
 		p = random(noncycle_nbrs);
 		path.push(p);
 	}
