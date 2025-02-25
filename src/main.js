@@ -1,6 +1,8 @@
 let shared;
 let me;
 let guests;
+let timer;
+let time_max = 2*60
 
 // https://github.com/jbakse/p5party_foundation/blob/main/src/js/main.js
 Object.assign(window, {
@@ -18,6 +20,7 @@ function preload() {
 
 	shared = partyLoadShared("shared", {
 		grid: createGrid(),
+		time_val:time_max,
 	});
 	// shared = partyLoadShared("globals");
 
@@ -28,6 +31,8 @@ function preload() {
 		gameState: 0, //0 for started, 1 for key found, 2 for door opened
 		idx: undefined,
 	});
+	timer = document.getElementById('timer-val')
+	
 }
 
 function setup() {
@@ -35,7 +40,7 @@ function setup() {
 	noStroke();
 	background("white");
 
-	partyToggleInfo(true);
+	// partyToggleInfo(true);
 
 	// if (partyIsHost()) {
 	// 	// shared.grid = createGrid();
@@ -51,11 +56,13 @@ function setup() {
 			me.col = 0; // fix thsi
 		}
 	}
+	setUp_UI()
 }
 
 function draw() {
 	drawGrid(shared.grid);
 	drawPlayers(guests);
+	updateTimer()
 }
 
 function keyPressed() {
@@ -103,4 +110,63 @@ function drawPlayers(guests) {
 		ellipse(guest.col * h + h / 2, guest.row * w + w / 2, 10, 10);
 		pop();
 	}
+}
+
+
+
+function setUp_UI(){
+		//UI 
+	reset_button = document.getElementById('reset-button')
+	reset_button.addEventListener('click', function() {
+		
+		reset()
+	});
+
+	info_button = document.getElementById('info-button')
+	info_button.addEventListener('click', function() {
+		console.log("info clicked")
+	});
+
+	
+}
+
+function reset(){
+	console.log("reset clicked")
+	console.log()
+
+	//reset shared grid and time value
+	shared.grid = createGrid()
+	shared.time_val = time_max
+
+	//reset player states
+	//TODO: NOT SURE BAOUT HTIS"
+	for (const guest of guests) {
+		guest.row = undefined;
+		guest.col = undefined;
+		guest.gameState = 0;
+		guest.idx = undefined
+	}
+	
+
+}
+
+function showInfo(){
+
+}
+
+function updateTimer(){
+	if(partyIsHost()){
+		if(frameCount %60 ==0){
+			shared.time_val = Math.max(shared.time_val -1 ,0)
+		}
+		
+	}
+	let s = shared.time_val;
+	let m = Math.floor(s/60)
+	let s_str = `${s%60}`
+	if(s_str.length ==1){
+		s_str = `0${s%60}`
+	}
+	
+	timer.textContent = `${m}:${s_str}`
 }

@@ -7,7 +7,10 @@ Object.assign(window, {
 });
 
 function makePath(num_rows, num_cols, playerIdx) {
-  let player_start_pos = [[0,0], [0,num_cols-2]]
+	//starting positions for players by index
+  	let player_start_pos = [[0,0], [0,num_cols-1]]
+
+	//helper function
 	function getNbrs(p) {
 		let nbrs = [];
 		let pcol = p[0];
@@ -41,9 +44,15 @@ function makePath(num_rows, num_cols, playerIdx) {
   }
 
 	let path = [p];
-  //  (p[1]<colBoundary[0] || p[1]>colBoundary[1])
+  
+  //keep creating the path while its outside the finish boundary
+  function isFinished(p){
+    let row_condition = p[0] >= num_rows*3/4 //end of the map
+    let col_condition = colBoundary[0]<p[1] && p[1]<colBoundary[1] //other side of the board
 
-	while (p[0] < num_rows - 1 && (p[1]<colBoundary[0] || p[1]>colBoundary[1])) {
+    return row_condition && col_condition
+  }
+	while (!isFinished(p) ) {
 		//before the end is hit
 		let nbrs = getNbrs(p);
 		let noncycle_nbrs = [];
@@ -57,7 +66,16 @@ function makePath(num_rows, num_cols, playerIdx) {
 
 		//now select a random non cycle neightbor to add
 		if (noncycle_nbrs.length == 0) {
-      noncycle_nbrs = nbrs
+			let r = random()
+			if(r< .5 && nbrs.length >=1){
+				console.log('here')
+				noncycle_nbrs = [nbrs[0]]
+			}else if (r< .8){
+				noncycle_nbrs = nbrs
+			}else{
+				break;
+			}
+      		
 			// break;
 		}
 
