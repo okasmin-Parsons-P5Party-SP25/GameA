@@ -6,7 +6,7 @@ Object.assign(window, {
 	sortPath,
 });
 
-function makePath(num_rows, num_cols) {
+function makePath(num_rows, num_cols, playerIdx) {
 	function getNbrs(p) {
 		let nbrs = [];
 		let pcol = p[0];
@@ -30,8 +30,11 @@ function makePath(num_rows, num_cols) {
 	}
 
 	//start the maze creation with a node in the top row
-	let p_col = 1;
-	let p = [p_col, 0];
+
+	let p = [0, 0];
+  if(playerIdx == 1){
+    p = [0, num_cols-1];
+  }
 
 	let path = [p];
 	while (p[1] < num_rows - 1 && p != undefined) {
