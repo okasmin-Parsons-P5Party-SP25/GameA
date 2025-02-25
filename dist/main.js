@@ -45,8 +45,10 @@ function setup() {
 	for (let i = 0; i < guests.length; i++) {
 		if (guests[i] === me) {
 			me.idx = i;
-			me.row = starting[i].row;
-			me.col = starting[i].col;
+			// me.row = starting[i].row;
+			// me.col = starting[i].col;
+			me.row = 0;
+			me.col = 0;
 		}
 	}
 }
@@ -90,7 +92,7 @@ function handleMove(newRow, newCol) {
 	return validMove;
 }
 
-const drawPlayers = (guests) => {
+function drawPlayers(guests) {
 	for (let i = 0; i < guests.length; i++) {
 		const guest = guests[i];
 		push();
@@ -100,4 +102,4 @@ const drawPlayers = (guests) => {
 		ellipse(guest.col * h + h / 2, guest.row * w + w / 2, 10, 10);
 		pop();
 	}
-};
+}
