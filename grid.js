@@ -12,6 +12,12 @@ const h = gridHeight / nRows; //cell height
 //starting position of players -- temporary
 const starting = [undefined, undefined];
 
+Object.assign(window, {
+	createGrid,
+	drawGrid,
+	checkCell,
+});
+
 /**
  * Creates the Grid structure
  */

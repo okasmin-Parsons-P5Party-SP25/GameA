@@ -3,12 +3,14 @@ let me;
 let guests;
 
 // https://github.com/jbakse/p5party_foundation/blob/main/src/js/main.js
-// Object.assign(window, {
-// 	preload,
-// 	setup,
-// 	draw,
-// 	mouseClicked,
-// });
+Object.assign(window, {
+	preload,
+	setup,
+	draw,
+	keyPressed,
+	handleMove,
+	drawPlayers,
+});
 
 //delete this later just for testing
 function preload() {
