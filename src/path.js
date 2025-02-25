@@ -7,6 +7,7 @@ Object.assign(window, {
 });
 
 function makePath(num_rows, num_cols, playerIdx) {
+  console.log(playerIdx)
 	function getNbrs(p) {
 		let nbrs = [];
 		let pcol = p[0];
@@ -33,7 +34,7 @@ function makePath(num_rows, num_cols, playerIdx) {
 
 	let p = [0, 0];
   if(playerIdx == 1){
-    p = [0, num_cols-1];
+    p = [0, num_cols-3];
   }
 
 	let path = [p];
