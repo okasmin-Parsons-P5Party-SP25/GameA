@@ -9,9 +9,6 @@ const gridHeight = 500;
 const w = gridWidth / nCols; //cell width
 const h = gridHeight / nRows; //cell height
 
-//starting position of players -- temporary
-const starting = [undefined, undefined];
-
 Object.assign(window, {
 	createGrid,
 	drawGrid,
@@ -30,17 +27,20 @@ function createGrid() {
 	for (let playerNum = 0; playerNum < nPlayers; playerNum++) {
 		all_enabled.push(true);
 		all_disabled.push(false);
-		let playerPath = makePath(nRows, nCols);
+		let playerPath = makePath(nRows, nCols, playerNum);
 
 		let tries = 0;
 		while (tries < 5 && playerPath.length < 2 * nRows) {
-			playerPath = makePath(nRows, nCols);
+			playerPath = makePath(nRows, nCols, playerNum);
 			tries++;
+			console.log("tries", tries);
 		}
 		playerPaths.push(playerPath);
 
 		//select a key location
-		let key = random(playerPath);
+		// let key = random(playerPath);
+		console.log(playerPath[playerPath.length - 1]);
+		let key = playerPath[playerPath.length - 1];
 		playerKeys.push(key);
 	}
 
@@ -91,15 +91,6 @@ function createGrid() {
 			};
 
 			row.push(grid_entry);
-
-			// set starting values for players
-			// will need to update for more than 2 players
-			if (!starting[0] && enabled_list[0] && !enabled_list[1]) {
-				starting[0] = { row: rowNum, col: colNum };
-			}
-			if (!starting[1] && enabled_list[1] && !enabled_list[0]) {
-				starting[1] = { row: rowNum, col: colNum };
-			}
 		}
 		grid.push(row);
 	}
