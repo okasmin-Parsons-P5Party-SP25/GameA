@@ -2,7 +2,7 @@ let shared;
 let me;
 let guests;
 let timer;
-let time_max = 2*60
+let time_max = 2 * 60;
 
 // https://github.com/jbakse/p5party_foundation/blob/main/src/js/main.js
 Object.assign(window, {
@@ -16,23 +16,22 @@ Object.assign(window, {
 
 //delete this later just for testing
 function preload() {
-	partyConnect("wss://demoserver.p5party.org", "gameA_groupB");
+	partyConnect("wss://demoserver.p5party.org", "gameA_groupB_okasmin");
 
 	shared = partyLoadShared("shared", {
 		grid: createGrid(),
-		time_val:time_max,
+		time_val: time_max,
 	});
 	// shared = partyLoadShared("globals");
 
 	guests = partyLoadGuestShareds();
 	me = partyLoadMyShared({
-		row: undefined, //current grid position
-		col: undefined, //current grid position
+		row: 0, //current grid position, initiate at 0 and set in setup
+		col: 0, //current grid position, initiate at 0 and set in setup
 		gameState: 0, //0 for started, 1 for key found, 2 for door opened
-		idx: undefined,
+		idx: 0, // initiate at 0 and set in setup
 	});
-	timer = document.getElementById('timer-val')
-	
+	timer = document.getElementById("timer-val");
 }
 
 function setup() {
@@ -42,27 +41,26 @@ function setup() {
 
 	// partyToggleInfo(true);
 
-	// if (partyIsHost()) {
-	// 	// shared.grid = createGrid();
-	// 	partySetShared(shared, { grid: createGrid() });
-	// }
+	const playerStarts = [
+		[0, 0],
+		[0, nCols - 3],
+	];
 
-	for (let i = 0; i < guests.length; i++) {
+	const maxIdx = iterateGuestsIdx(guests);
+	for (let i = 0; i < maxIdx; i++) {
 		if (guests[i] === me) {
 			me.idx = i;
-			// me.row = starting[i].row;
-			// me.col = starting[i].col;
-			me.row = 0; // fix this
-			me.col = 0; // fix thsi
+			me.row = playerStarts[i][0];
+			me.col = playerStarts[i][1];
 		}
 	}
-	setUp_UI()
+	setUp_UI();
 }
 
 function draw() {
 	drawGrid(shared.grid);
 	drawPlayers(guests);
-	updateTimer()
+	updateTimer();
 }
 
 function keyPressed() {
@@ -100,43 +98,37 @@ function handleMove(newRow, newCol) {
 }
 
 function drawPlayers(guests) {
-	// only draw 2 players
-	for (let i = 0; i < guests.length; i++) {
+	const maxIdx = iterateGuestsIdx(guests);
+	for (let i = 0; i < maxIdx; i++) {
 		const guest = guests[i];
 		push();
 		fill(playerColors[i]);
 		stroke("blue");
-		// for some reason row and col seem to be switched
 		ellipse(guest.col * h + h / 2, guest.row * w + w / 2, 10, 10);
 		pop();
 	}
 }
 
-
-
-function setUp_UI(){
-		//UI 
-	reset_button = document.getElementById('reset-button')
-	reset_button.addEventListener('click', function() {
-		
-		reset()
+function setUp_UI() {
+	//UI
+	reset_button = document.getElementById("reset-button");
+	reset_button.addEventListener("click", function () {
+		reset();
 	});
 
-	info_button = document.getElementById('info-button')
-	info_button.addEventListener('click', function() {
-		console.log("info clicked")
+	info_button = document.getElementById("info-button");
+	info_button.addEventListener("click", function () {
+		console.log("info clicked");
 	});
-
-	
 }
 
-function reset(){
-	console.log("reset clicked")
-	console.log()
+function reset() {
+	console.log("reset clicked");
+	console.log();
 
 	//reset shared grid and time value
-	shared.grid = createGrid()
-	shared.time_val = time_max
+	shared.grid = createGrid();
+	shared.time_val = time_max;
 
 	//reset player states
 	//TODO: NOT SURE BAOUT HTIS"
@@ -144,29 +136,32 @@ function reset(){
 		guest.row = undefined;
 		guest.col = undefined;
 		guest.gameState = 0;
-		guest.idx = undefined
+		guest.idx = undefined;
 	}
-	
-
 }
 
-function showInfo(){
+function showInfo() {}
 
-}
-
-function updateTimer(){
-	if(partyIsHost()){
-		if(frameCount %60 ==0){
-			shared.time_val = Math.max(shared.time_val -1 ,0)
+function updateTimer() {
+	if (partyIsHost()) {
+		if (frameCount % 60 == 0) {
+			shared.time_val = Math.max(shared.time_val - 1, 0);
 		}
-		
 	}
 	let s = shared.time_val;
-	let m = Math.floor(s/60)
-	let s_str = `${s%60}`
-	if(s_str.length ==1){
-		s_str = `0${s%60}`
+	let m = Math.floor(s / 60);
+	let s_str = `${s % 60}`;
+	if (s_str.length == 1) {
+		s_str = `0${s % 60}`;
 	}
-	
-	timer.textContent = `${m}:${s_str}`
+
+	timer.textContent = `${m}:${s_str}`;
+}
+function iterateGuestsIdx(guests) {
+	if (guests.length === 1) {
+		("return 1");
+		return 1;
+	} else {
+		return nPlayers;
+	}
 }

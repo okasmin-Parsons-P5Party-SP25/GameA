@@ -106,36 +106,6 @@ function overlaps(l1, l2) {
 	return false;
 }
 
-// find the "first" cell on the player's path
-// "first" is the cell closest to [0,0]
-// function findMinCell(path) {
-// 	let min = path[0];
-// 	let distance = dist(0, 0, min[0], min[1]);
-// 	for (let i = 1; i < path.length; i++) {
-// 		if (dist(0, 0, path[i][0], path[i][i]) < distance) {
-// 			min = path[i];
-// 		}
-// 	}
-// 	console.log("min", min);
-// 	console.log("distance", distance);
-// 	return min;
-// }
-
-// find the "last" cell on the player's path
-// "last" is the cell closest to [gridWidth, gridLength]
-// function findMaxCell(path) {
-// 	let max = path[0];
-// 	let distance = dist(0, 0, max[0], max[1]);
-// 	for (let i = 1; i < path.length; i++) {
-// 		if (dist(0, 0, path[i][0], path[i][i]) > distance) {
-// 			max = path[i];
-// 		}
-// 	}
-// 	console.log("max", max);
-// 	console.log("distance", distance);
-// 	return max;
-// }
-
 function sortPath(path) {
 	return path.sort((a, b) => {
 		const dist1 = dist(0, 0, a[0], a[1]);

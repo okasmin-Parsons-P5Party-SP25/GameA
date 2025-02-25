@@ -9,9 +9,6 @@ const gridHeight = 500;
 const w = gridWidth / nCols; //cell width
 const h = gridHeight / nRows; //cell height
 
-//starting position of players -- temporary
-const starting = [undefined, undefined];
-
 Object.assign(window, {
 	createGrid,
 	drawGrid,
@@ -41,7 +38,9 @@ function createGrid() {
 		playerPaths.push(playerPath);
 
 		//select a key location
-		let key = random(playerPath);
+		// let key = random(playerPath);
+		console.log(playerPath[playerPath.length - 1]);
+		let key = playerPath[playerPath.length - 1];
 		playerKeys.push(key);
 	}
 
@@ -92,15 +91,6 @@ function createGrid() {
 			};
 
 			row.push(grid_entry);
-
-			// set starting values for players
-			// will need to update for more than 2 players
-			if (!starting[0] && enabled_list[0] && !enabled_list[1]) {
-				starting[0] = { row: rowNum, col: colNum };
-			}
-			if (!starting[1] && enabled_list[1] && !enabled_list[0]) {
-				starting[1] = { row: rowNum, col: colNum };
-			}
 		}
 		grid.push(row);
 	}
