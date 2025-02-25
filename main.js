@@ -57,6 +57,10 @@ function draw() {
 	drawDoors();
 	updateTimer();
 
+	if (shared.time_val === 0) {
+		drawLose();
+	}
+
 	// can only win/lose if there are 2 players
 	if (
 		guests[0] &&
