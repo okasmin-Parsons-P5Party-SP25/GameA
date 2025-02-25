@@ -47,8 +47,8 @@ function setup() {
 			me.idx = i;
 			// me.row = starting[i].row;
 			// me.col = starting[i].col;
-			me.row = 0;
-			me.col = 0;
+			me.row = 0; // fix this
+			me.col = 0; // fix thsi
 		}
 	}
 }
@@ -93,6 +93,7 @@ function handleMove(newRow, newCol) {
 }
 
 function drawPlayers(guests) {
+	// only draw 2 players
 	for (let i = 0; i < guests.length; i++) {
 		const guest = guests[i];
 		push();
