@@ -8,6 +8,18 @@ let door1;
 const doorRow = 0;
 let player0Img;
 let player1Img;
+let key0Img;
+let key1Img;
+let grass0Img;
+let grass1Img;
+let grass2Img;
+let grass3Img;
+
+// update
+const playerColors = [
+	"#22697e", //blue
+	"#f083ab", //pink
+];
 
 // https://github.com/jbakse/p5party_foundation/blob/main/src/js/main.js
 Object.assign(window, {
@@ -17,11 +29,12 @@ Object.assign(window, {
 	keyPressed,
 	handleMove,
 	drawPlayers,
+	drawGrid,
 });
 
 //delete this later just for testing
 function preload() {
-	partyConnect("wss://demoserver.p5party.org", "gameA_groupB_okasmin");
+	partyConnect("wss://demoserver.p5party.org", "gameA_groupB");
 
 	shared = partyLoadShared("shared", {
 		grid: createGrid(),
@@ -38,7 +51,15 @@ function preload() {
 	timer = document.getElementById("timer-val");
 
 	player0Img = loadImage("images/BlueFrog-Front.png");
-	player1Img = loadImage("images/GreenFrog-Front.png");
+	player1Img = loadImage("images/PinkFrog-Front.png");
+
+	key0Img = loadImage("images/Key-Blue.png");
+	key1Img = loadImage("images/Key-Pink.png");
+
+	grass0Img = loadImage("images/Grass-0.png");
+	grass1Img = loadImage("images/Grass-1.png");
+	grass2Img = loadImage("images/Grass-2.png");
+	grass3Img = loadImage("images/Grass-3.png");
 }
 
 function setup() {
@@ -46,26 +67,25 @@ function setup() {
 	noStroke();
 	background("white");
 
-	partyToggleInfo(true);
-
-	// if player
+	// partyToggleInfo(true);
 
 	setPlayerStarts();
 	setUp_UI();
 
-	door0 = { row: doorRow, col: Math.floor(random(0, nRows / 2)) };
-	door1 = { row: doorRow, col: Math.floor(random(nRows / 2, nRows)) };
+	door0 = { row: doorRow, col: Math.floor(random(1, nRows / 2)) };
+	door1 = { row: doorRow, col: Math.floor(random(nRows / 2, nRows - 1)) };
 }
 
 function draw() {
+	image(grass3Img, 0, 0, gridWidth, gridHeight);
 	drawGrid(shared.grid);
 	drawPlayers(guests);
 	drawDoors();
 	updateTimer();
 
-	// if (shared.time_val === 0) {
-	// 	drawLose();
-	// }
+	if (shared.time_val === 0) {
+		drawLose();
+	}
 
 	// can only win/lose if there are 2 players
 	if (
@@ -150,12 +170,6 @@ function drawPlayers(guests) {
 		if (i === 1) {
 			image(player1Img, x, y, w, h);
 		}
-
-		// push();
-		// fill(playerColors[i]);
-		// stroke("blue");
-		// ellipse(guest.col * h + h / 2, guest.row * w + w / 2, 10, 10);
-		// pop();
 	}
 }
 
@@ -220,10 +234,10 @@ function drawDoors() {
 	push();
 	fill("#007fff");
 	if (guests[0] && guests[0].gameState > 0) {
-		ellipse(door1.col * h + h / 2, door1.row * w + w / 2, 10, 10);
+		ellipse(door1.col * h + h / 2, door1.row * w + w / 2, 15, 15);
 	}
 	if (guests[1] && guests[1].gameState > 0) {
-		ellipse(door0.col * h + h / 2, door0.row * w + w / 2, 10, 10);
+		ellipse(door0.col * h + h / 2, door0.row * w + w / 2, 15, 15);
 	}
 	pop();
 }
@@ -275,4 +289,53 @@ function drawLose() {
 	textFont("Verdana");
 	text("YOU LOSE :(", gridWidth / 2, gridHeight / 2);
 	pop();
+}
+
+/**
+ * draws the grid and all its elements
+ */
+function drawGrid(grid) {
+	stroke("white");
+	for (const row of grid) {
+		for (const entry of row) {
+			//background
+			if (entry.type == "grass") {
+				fill("#BFD281");
+				// TODO vary which grass tile is shown?
+				// image(grass3Img, entry.x, entry.y, entry.w, entry.h);
+			}
+
+			//enabled status drawing
+			if (entry.enabled.every((e) => e == false)) {
+				//all false
+				// fill("black");
+				// rect(entry.x, entry.y, entry.w, entry.h);
+			} else if (entry.enabled.every((e) => e == true)) {
+				rect(entry.x, entry.y, entry.w, entry.h);
+			} else {
+				for (let playerNum = 0; playerNum < nPlayers; playerNum++) {
+					if (entry.enabled[playerNum]) {
+						fill(playerColors[playerNum]);
+						rect(entry.x, entry.y, entry.w, entry.h);
+					}
+				}
+			}
+
+			if (typeof entry.key === "number") {
+				push();
+				const x = entry.x;
+				const y = entry.y;
+
+				if (entry.key === 0) {
+					image(grass3Img, entry.x, entry.y, entry.w, entry.h);
+					image(key0Img, x, y, w, h);
+				}
+				if (entry.key === 1) {
+					image(grass3Img, entry.x, entry.y, entry.w, entry.h);
+					image(key1Img, x, y, w, h);
+				}
+				pop();
+			}
+		}
+	}
 }
