@@ -6,6 +6,8 @@ let time_max = 2 * 60;
 let door0;
 let door1;
 const doorRow = 0;
+let player0Img;
+let player1Img;
 
 // https://github.com/jbakse/p5party_foundation/blob/main/src/js/main.js
 Object.assign(window, {
@@ -25,7 +27,6 @@ function preload() {
 		grid: createGrid(),
 		time_val: time_max,
 	});
-	// shared = partyLoadShared("globals");
 
 	guests = partyLoadGuestShareds();
 	me = partyLoadMyShared({
@@ -35,6 +36,9 @@ function preload() {
 		idx: 0, // initiate at 0 and set in setup
 	});
 	timer = document.getElementById("timer-val");
+
+	player0Img = loadImage("images/BlueFrog-Front.png");
+	player1Img = loadImage("images/GreenFrog-Front.png");
 }
 
 function setup() {
@@ -43,6 +47,8 @@ function setup() {
 	background("white");
 
 	partyToggleInfo(true);
+
+	// if player
 
 	setPlayerStarts();
 	setUp_UI();
@@ -57,9 +63,9 @@ function draw() {
 	drawDoors();
 	updateTimer();
 
-	if (shared.time_val === 0) {
-		drawLose();
-	}
+	// if (shared.time_val === 0) {
+	// 	drawLose();
+	// }
 
 	// can only win/lose if there are 2 players
 	if (
@@ -122,7 +128,6 @@ function keyPressed() {
 }
 
 function handleMove(newRow, newCol) {
-	// console.log(me.gameState);
 	if (me.gameState === 1) {
 		checkCellDoor(newRow, newCol);
 		return true;
@@ -136,11 +141,21 @@ function drawPlayers(guests) {
 	const maxIdx = iterateGuestsIdx(guests);
 	for (let i = 0; i < maxIdx; i++) {
 		const guest = guests[i];
-		push();
-		fill(playerColors[i]);
-		stroke("blue");
-		ellipse(guest.col * h + h / 2, guest.row * w + w / 2, 10, 10);
-		pop();
+		const x = guest.col * h;
+		const y = guest.row * w;
+
+		if (i === 0) {
+			image(player0Img, x, y, w, h);
+		}
+		if (i === 1) {
+			image(player1Img, x, y, w, h);
+		}
+
+		// push();
+		// fill(playerColors[i]);
+		// stroke("blue");
+		// ellipse(guest.col * h + h / 2, guest.row * w + w / 2, 10, 10);
+		// pop();
 	}
 }
 
