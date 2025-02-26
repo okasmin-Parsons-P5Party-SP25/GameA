@@ -1,5 +1,4 @@
 const nPlayers = 2;
-const playerColors = ["#EE4934", "#E6D040"];
 
 //constants
 const nRows = 20;
@@ -11,7 +10,6 @@ const h = gridHeight / nRows; //cell height
 
 Object.assign(window, {
 	createGrid,
-	drawGrid,
 	checkCell,
 });
 
@@ -95,44 +93,6 @@ function createGrid() {
 		grid.push(row);
 	}
 	return grid;
-}
-
-/**
- * draws the grid and all its elements
- */
-function drawGrid(grid) {
-	stroke("white");
-	for (const row of grid) {
-		for (const entry of row) {
-			//background
-			if (entry.type == "grass") {
-				fill("#BFD281");
-			}
-
-			//enabled status drawing
-			if (entry.enabled.every((e) => e == false)) {
-				//all false
-				fill("black");
-				rect(entry.x, entry.y, entry.w, entry.h);
-			} else if (entry.enabled.every((e) => e == true)) {
-				rect(entry.x, entry.y, entry.w, entry.h);
-			} else {
-				for (let playerNum = 0; playerNum < nPlayers; playerNum++) {
-					if (entry.enabled[playerNum]) {
-						fill(playerColors[playerNum]);
-						rect(entry.x, entry.y, entry.w, entry.h);
-					}
-				}
-			}
-
-			if (typeof entry.key === "number") {
-				push();
-				fill(playerColors[entry.key]);
-				ellipse(entry.x + entry.w / 2, entry.y + entry.h / 2, 10, 10);
-				pop();
-			}
-		}
-	}
 }
 
 /**
