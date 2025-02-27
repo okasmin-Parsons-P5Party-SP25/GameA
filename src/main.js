@@ -316,10 +316,28 @@ function drawGrid(grid) {
 				for (let playerNum = 0; playerNum < nPlayers; playerNum++) {
 					if (entry.enabled[playerNum]) {
 						fill(playerColors[playerNum]);
-						rect(entry.x, entry.y, entry.w, entry.h);
+						
+						if(entry.corner != false && entry.type == 'water'){
+							if(entry.corner.includes('bottom') && entry.corner.includes('left')){
+								rect(entry.x, entry.y, entry.w, entry.h,0,0,0,50);
+							}if(entry.corner.includes('bottom') && entry.corner.includes('right')){
+								rect(entry.x, entry.y, entry.w, entry.h,0,0,50,0);
+							}if(entry.corner.includes('top') && entry.corner.includes('right')){			
+								rect(entry.x, entry.y, entry.w, entry.h,0,50,0,0);
+							}if(entry.corner.includes('top') && entry.corner.includes('left')){	
+								rect(entry.x, entry.y, entry.w, entry.h,50,0,0,0);
+							}
+						}else{
+							rect(entry.x, entry.y, entry.w, entry.h);
+						}
+						
 					}
 				}
+				
 			}
+			
+			
+			
 
 			if (typeof entry.key === "number") {
 				push();
@@ -336,6 +354,8 @@ function drawGrid(grid) {
 				}
 				pop();
 			}
+
+			
 		}
 	}
 }
