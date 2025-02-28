@@ -13,8 +13,8 @@ let key1Img;
 
 let grass_images = []
 
-let tile_mode = 1 //1 is light, 2 is dark, 3 is medium
 let tile_images = []
+let blue_tile;
 
 // update
 const playerColors = [
@@ -72,6 +72,8 @@ function preload() {
 		}
 		tile_images.push(imgs)
 	}
+	tile_images = [tile_images[0], tile_images[2]]
+	blue_tile = loadImage(`./images/Tiles/Tiles-4.png`);
 	
 }
 
@@ -312,7 +314,8 @@ function drawGrid(grid) {
 	for (const row of grid) {
 		for (const entry of row) {
 			//background
-			image(grass_images[1], entry.x, entry.y, entry.w, entry.h);
+			// image(grass_images[1], entry.x, entry.y, entry.w, entry.h);
+			image(blue_tile, entry.x, entry.y, entry.w, entry.h);
 			
 
 			//enabled status drawing
@@ -326,24 +329,10 @@ function drawGrid(grid) {
 						imageMode(CENTER);
 						angleMode(DEGREES);
 						translate(entry.x + entry.w/2, entry.y + entry.h/2)
-						if(!entry.corner.includes('horizontal') && !entry.corner.includes('vertical')){
-							
-							if(entry.corner.includes('bottom') && entry.corner.includes('left')){
-								rotate(180+90)
-							}else if(entry.corner.includes('bottom') && entry.corner.includes('right')){
-								rotate(180)
-							}else if(entry.corner.includes('top') && entry.corner.includes('right')){			
-								rotate(90)
-							}else if(entry.corner.includes('top') && entry.corner.includes('left')){	
-								rotate(0)
-							}
-							image(tile_images[playerNum]['a'], 0,0, entry.w, entry.h);
-						}else{
-							if(entry.corner.includes('vertical')){
-								rotate(90)
-							}
-							image(tile_images[playerNum]['b'], 0,0, entry.w, entry.h);
-						}
+						let img_key = entry.tile_info[0]
+						let img_rotation = entry.tile_info[1]
+						rotate(img_rotation)
+						image(tile_images[playerNum][img_key], 0,0, entry.w, entry.h)
 						pop()
 						
 					}
@@ -351,20 +340,17 @@ function drawGrid(grid) {
 				
 			}
 			
-			
-			
-
 			if (typeof entry.key === "number") {
 				push();
 				const x = entry.x;
 				const y = entry.y;
 
 				if (entry.key === 0) {
-					image(grass_images[2], entry.x, entry.y, entry.w, entry.h);
+					// image(grass_images[2], entry.x, entry.y, entry.w, entry.h);
 					image(key0Img, x, y, w, h);
 				}
 				if (entry.key === 1) {
-					image(grass_images[2], entry.x, entry.y, entry.w, entry.h);
+					// image(grass_images[2], entry.x, entry.y, entry.w, entry.h);
 					image(key1Img, x, y, w, h);
 				}
 				pop();
