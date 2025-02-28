@@ -34,57 +34,52 @@ function createGrid() {
 			console.log("tries", tries);
 		}
 		playerPaths.push(playerPath);
-
-		//select a key location
-		// let key = random(playerPath);
 		console.log(playerPath[playerPath.length - 1]);
 		let key = playerPath[playerPath.length - 1];
 		playerKeys.push(key);
 	}
 
 	//checks if the inputed rowNum, colNum is a corner of any path
-	function checkIsCorner(rowNum, colNum){
+	function checkIsCorner(rowNum, colNum, playerNum){
 		let nbrs = getNbrs([rowNum, colNum]) 
-		let nbr_above = rowNum == 0
-		let nbr_below= rowNum == nRows-1
-		let nbr_left= colNum == 0
-		let nbr_right= colNum == nCols -1
-		for(let playerNum = 0; playerNum < nPlayers; playerNum++){
-			for(let [nbr_rowNum, nbr_col] of nbrs){
-				for (let [path_rowNum, path_col] of playerPaths[playerNum]){
-					//only interested if the nbr is in the path
-					if(nbr_rowNum == path_rowNum && nbr_col == path_col){
-						if(nbr_rowNum == rowNum){ //same row so check left and right
-							if(nbr_col<colNum){
-								nbr_left=true
-							}else if(nbr_col>colNum){
-								nbr_right=true
-							}
+		let nbr_above = false
+		let nbr_below= false
+		let nbr_left= false
+		let nbr_right= false
 
-						}else if(nbr_col == colNum){ //same row so check above and below
-							if(nbr_rowNum<rowNum){
-								nbr_above=true
-							}else if(nbr_rowNum>rowNum){
-								nbr_below=true
-							}
-
-						}else{
-							console.log("SHOULDNT HAPPEN")
+		for(let [nbr_rowNum, nbr_col] of nbrs){
+			for (let [path_rowNum, path_col] of playerPaths[playerNum]){
+				//only interested if the nbr is in the path
+				if(nbr_rowNum == path_rowNum && nbr_col == path_col){
+					if(nbr_rowNum == rowNum){ //same row so check left and right
+						if(nbr_col<colNum){
+							nbr_left=true
+						}else if(nbr_col>colNum){
+							nbr_right=true
 						}
 
-						//check if its done
-						if((nbr_left &&nbr_right) || (nbr_above && nbr_below)){ //in a line
-							return false
+					}else if(nbr_col == colNum){ //same row so check above and below
+						if(nbr_rowNum<rowNum){
+							nbr_above=true
+						}else if(nbr_rowNum>rowNum){
+							nbr_below=true
 						}
-						break;
+
 					}
-	
+					//check if its done
+					if((nbr_left &&nbr_right)){ //in a line
+						return ['horizontal']
+					}
+					if((nbr_above && nbr_below)){
+						return ["vertical"]
+					}
+					break;
 				}
-			}	
-		}
-		if(nbr_left &&nbr_right || nbr_above && nbr_below){ //in a line
-			return false
-		}
+
+			}
+		}	
+	
+	
 		let corner_type = []
 		if(nbr_above == false){
 			corner_type.push('top')
@@ -113,11 +108,13 @@ function createGrid() {
 			let type = 'grass'
 
 			for (let playerNum = 0; playerNum < nPlayers; playerNum++) { //check if its in each player path
+				if(cornerType !=false){
+					break
+				}
 				for (let [px, py] of playerPaths[playerNum]) {
-					
 					if (px == rowNum && py == colNum) { //if its in the paths
 						type = 'water'
-						cornerType = checkIsCorner(rowNum, colNum);
+						cornerType = checkIsCorner(rowNum, colNum,playerNum);
 						enabled_list[playerNum] = true;
 						break;
 					}

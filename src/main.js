@@ -10,10 +10,11 @@ let player0Img;
 let player1Img;
 let key0Img;
 let key1Img;
-let grass0Img;
-let grass1Img;
-let grass2Img;
-let grass3Img;
+
+let grass_images = []
+
+let tile_mode = 1 //1 is light, 2 is dark, 3 is medium
+let tile_images = []
 
 // update
 const playerColors = [
@@ -56,10 +57,22 @@ function preload() {
 	key0Img = loadImage("images/Key-Blue.png");
 	key1Img = loadImage("images/Key-Pink.png");
 
-	grass0Img = loadImage("images/Grass-0.png");
-	grass1Img = loadImage("images/Grass-1.png");
-	grass2Img = loadImage("images/Grass-2.png");
-	grass3Img = loadImage("images/Grass-3.png");
+	for(let grassImgIdx = 0; grassImgIdx<4; grassImgIdx++){
+		let grassImg = loadImage(`images/Grass-${grassImgIdx}.png`)
+		grass_images.push(grassImg)
+
+	}
+
+	//water tiles
+	for(let tile_mode=1; tile_mode<=3; tile_mode++){
+		let imgs={}
+		for(let tile_type of ['a', 'b', 'c','d']){
+			img_path = `./images/Tiles/Tiles-${tile_mode}${tile_type}.png`
+			imgs[tile_type] = loadImage(img_path);
+		}
+		tile_images.push(imgs)
+	}
+	
 }
 
 function setup() {
@@ -77,7 +90,7 @@ function setup() {
 }
 
 function draw() {
-	image(grass3Img, 0, 0, gridWidth, gridHeight);
+	image(grass_images[2], 0, 0, gridWidth, gridHeight);
 	drawGrid(shared.grid);
 	drawPlayers(guests);
 	drawDoors();
@@ -299,37 +312,39 @@ function drawGrid(grid) {
 	for (const row of grid) {
 		for (const entry of row) {
 			//background
-			if (entry.type == "grass") {
-				fill("#BFD281");
-				// TODO vary which grass tile is shown?
-				// image(grass3Img, entry.x, entry.y, entry.w, entry.h);
-			}
+			image(grass_images[1], entry.x, entry.y, entry.w, entry.h);
+			
 
 			//enabled status drawing
 			if (entry.enabled.every((e) => e == false)) {
-				//all false
-				// fill("black");
-				// rect(entry.x, entry.y, entry.w, entry.h);
-			} else if (entry.enabled.every((e) => e == true)) {
-				rect(entry.x, entry.y, entry.w, entry.h);
+		
 			} else {
 				for (let playerNum = 0; playerNum < nPlayers; playerNum++) {
 					if (entry.enabled[playerNum]) {
 						fill(playerColors[playerNum]);
-						
-						if(entry.corner != false && entry.type == 'water'){
+						push()
+						imageMode(CENTER);
+						angleMode(DEGREES);
+						translate(entry.x + entry.w/2, entry.y + entry.h/2)
+						if(!entry.corner.includes('horizontal') && !entry.corner.includes('vertical')){
+							
 							if(entry.corner.includes('bottom') && entry.corner.includes('left')){
-								rect(entry.x, entry.y, entry.w, entry.h,0,0,0,50);
-							}if(entry.corner.includes('bottom') && entry.corner.includes('right')){
-								rect(entry.x, entry.y, entry.w, entry.h,0,0,50,0);
-							}if(entry.corner.includes('top') && entry.corner.includes('right')){			
-								rect(entry.x, entry.y, entry.w, entry.h,0,50,0,0);
-							}if(entry.corner.includes('top') && entry.corner.includes('left')){	
-								rect(entry.x, entry.y, entry.w, entry.h,50,0,0,0);
+								rotate(180+90)
+							}else if(entry.corner.includes('bottom') && entry.corner.includes('right')){
+								rotate(180)
+							}else if(entry.corner.includes('top') && entry.corner.includes('right')){			
+								rotate(90)
+							}else if(entry.corner.includes('top') && entry.corner.includes('left')){	
+								rotate(0)
 							}
+							image(tile_images[playerNum]['a'], 0,0, entry.w, entry.h);
 						}else{
-							rect(entry.x, entry.y, entry.w, entry.h);
+							if(entry.corner.includes('vertical')){
+								rotate(90)
+							}
+							image(tile_images[playerNum]['b'], 0,0, entry.w, entry.h);
 						}
+						pop()
 						
 					}
 				}
@@ -345,11 +360,11 @@ function drawGrid(grid) {
 				const y = entry.y;
 
 				if (entry.key === 0) {
-					image(grass3Img, entry.x, entry.y, entry.w, entry.h);
+					image(grass_images[2], entry.x, entry.y, entry.w, entry.h);
 					image(key0Img, x, y, w, h);
 				}
 				if (entry.key === 1) {
-					image(grass3Img, entry.x, entry.y, entry.w, entry.h);
+					image(grass_images[2], entry.x, entry.y, entry.w, entry.h);
 					image(key1Img, x, y, w, h);
 				}
 				pop();
