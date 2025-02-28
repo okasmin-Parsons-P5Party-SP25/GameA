@@ -3,8 +3,8 @@ const nPlayers = 2;
 //constants
 const nRows = 20;
 const nCols = 20;
-const gridWidth = 500;
-const gridHeight = 500;
+const gridWidth = 1500;
+const gridHeight = 1500;
 const w = gridWidth / nCols; //cell width
 const h = gridHeight / nRows; //cell height
 

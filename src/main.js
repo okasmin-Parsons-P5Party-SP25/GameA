@@ -32,6 +32,20 @@ Object.assign(window, {
 	drawGrid,
 });
 
+// Camera functionality to follow player around grid from here:
+// https://github.com/jbakse/p5party_foundation/blob/tomb/src/js/util/camera.js
+class Camera {
+	constructor(x, y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	follow(targetX, targetY, easing = 0) {
+		this.x = lerp(this.x, targetX, easing);
+		this.y = lerp(this.y, targetY, easing);
+	}
+}
+
 //delete this later just for testing
 function preload() {
 	partyConnect("wss://demoserver.p5party.org", "gameA_groupB");
@@ -47,6 +61,7 @@ function preload() {
 		col: 0, //current grid position, initiate at 0 and set in setup
 		gameState: 0, //0 for started, 1 for key found, 2 for door opened, 3 for lose
 		idx: 0, // initiate at 0 and set in setup
+		camera: {},
 	});
 	timer = document.getElementById("timer-val");
 
@@ -77,6 +92,22 @@ function setup() {
 }
 
 function draw() {
+	me.camera.follow(me.col * w, me.row * h, 0.1);
+
+	background("#f2f0e6");
+
+	// scroll
+	if (me.idx === 0) {
+		// player 0 starts top left on grid
+		translate(width * 0.25, height * 0.1);
+	}
+	if (me.idx === 1) {
+		// player 1 starts top right on grid
+		translate(width * 0.75, height * 0.1);
+	}
+	scale(1);
+	translate(-me.camera.x, -me.camera.y);
+
 	image(grass3Img, 0, 0, gridWidth, gridHeight);
 	drawGrid(shared.grid);
 	drawPlayers(guests);
@@ -115,6 +146,8 @@ function setPlayerStarts() {
 			me.idx = i;
 			me.row = playerStarts[i][0];
 			me.col = playerStarts[i][1];
+			let camera = new Camera(me.col * w, me.row * h);
+			me.camera = camera;
 		}
 	}
 }
@@ -160,16 +193,17 @@ function handleMove(newRow, newCol) {
 function drawPlayers(guests) {
 	const maxIdx = iterateGuestsIdx(guests);
 	for (let i = 0; i < maxIdx; i++) {
+		push();
 		const guest = guests[i];
-		const x = guest.col * h;
-		const y = guest.row * w;
+		translate(guest.col * h, guest.row * w);
 
 		if (i === 0) {
-			image(player0Img, x, y, w, h);
+			image(player0Img, 0, 0, w, h);
 		}
 		if (i === 1) {
-			image(player1Img, x, y, w, h);
+			image(player1Img, 0, 0, w, h);
 		}
+		pop();
 	}
 }
 
@@ -188,7 +222,6 @@ function setUp_UI() {
 
 function reset() {
 	console.log("reset clicked");
-	console.log();
 
 	//reset shared grid and time value
 	shared.grid = createGrid();
