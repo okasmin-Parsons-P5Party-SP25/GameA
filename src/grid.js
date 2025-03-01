@@ -22,6 +22,7 @@ function createGrid() {
 	let all_disabled = [];
 	let playerPaths = [];
 	let playerKeys = [];
+	let playerDoors = [];
 	for (let playerNum = 0; playerNum < nPlayers; playerNum++) {
 		all_enabled.push(true);
 		all_disabled.push(false);
@@ -31,10 +32,9 @@ function createGrid() {
 		while (tries < 5 && playerPath.length < 2 * nRows) {
 			playerPath = makePath(nRows, nCols, playerNum);
 			tries++;
-			console.log("tries", tries);
 		}
 		playerPaths.push(playerPath);
-		console.log(playerPath[playerPath.length - 1]);
+		
 		let key = playerPath[playerPath.length - 1];
 		playerKeys.push(key);
 	}
@@ -131,19 +131,18 @@ function createGrid() {
 			//set the enabled list based on the paths
 			let enabled_list = [...all_disabled];
 			let key = false;
-			let type = 'grass'
-			let tileType = false
+			let shared_path = false
+			let tile_infos = [false, false]
 
 			for (let playerNum = 0; playerNum < nPlayers; playerNum++) { //check if its in each player path
 				for (let [px, py] of playerPaths[playerNum]) {
 					if (px == rowNum && py == colNum) { //if its in the paths
 						type = 'water'
-						tileType = tileInfo(rowNum, colNum,playerNum);
+						tile_infos[playerNum] = tileInfo(rowNum, colNum,playerNum);
 						enabled_list[playerNum] = true;
 						break;
 					}
 				}
-
 				//check if its a key
 				if (
 					rowNum == playerKeys[playerNum][0] &&
@@ -153,6 +152,37 @@ function createGrid() {
 					// console.log("KEY", key, rowNum, colNum);
 				}
 			}
+
+			//handle overlapping tiles
+			shared_path = enabled_list[0] && enabled_list[1]
+	
+			if(shared_path){
+				if(random()<.5){
+					enabled_list[0] = false
+				}else{
+					enabled_list[1] = false
+				}
+
+				let shared_nbrs = getNbrs([rowNum, colNum])
+				//look at this row above and to the left
+				for(let [shared_nbr_row, shared_nbr_col] of shared_nbrs){
+					if(shared_nbr_row > rowNum || shared_nbr_col > colNum){
+						continue
+					}	
+					let shared_nbr_entry;
+					if(shared_nbr_row<rowNum){
+						shared_nbr_entry= grid[shared_nbr_row][shared_nbr_col]
+					}else{ //same row
+						shared_nbr_entry= row[shared_nbr_col]
+					}
+					
+					if(shared_nbr_entry.shared_path){
+						console.log('shared')
+						enabled_list = shared_nbr_entry.enabled
+					}	
+				}
+			}
+			
 
 			let grid_entry = {
 				//position info
@@ -167,7 +197,8 @@ function createGrid() {
 
 				//determines the background
 				type: type,
-				tile_info:tileType,
+				tile_info:tile_infos,
+				shared_path:shared_path,
 
 				//objects
 				key: key, //the index of a player if it is and false otherwise

@@ -314,34 +314,54 @@ function drawGrid(grid) {
 	for (const row of grid) {
 		for (const entry of row) {
 			//background
-			// image(grass_images[1], entry.x, entry.y, entry.w, entry.h);
+			tint(255,100)
+			if(noise(entry.x, entry.y)<.2){
+				image(grass_images[1], entry.x, entry.y, entry.w, entry.h);
+			}else if (noise(entry.x, entry.y)<.4){
+				image(grass_images[2], entry.x, entry.y, entry.w, entry.h);
+			}else if(noise(entry.x, entry.y)<.5){
+				image(grass_images[3], entry.x, entry.y, entry.w, entry.h);
+			}else{
+				image(grass_images[0], entry.x, entry.y, entry.w, entry.h);
+			}
+			
 			tint(255,255)
 			blendMode(BLEND)
-			image(blue_tile, entry.x, entry.y, entry.w, entry.h);
-			
 
 			//enabled status drawing
 			if (entry.enabled.every((e) => e == false)) {
-			} else {
-				if (entry.enabled.every((e) => e == true)) {
-					// tint(255,100)
-	
-				}
+			} else {	
 				for (let playerNum = 0; playerNum < nPlayers; playerNum++) {
-					if (entry.enabled[playerNum]) {
-						fill(playerColors[playerNum]);
+					if (entry.tile_info[playerNum] != false) {
 						push()
 						imageMode(CENTER);
 						angleMode(DEGREES);
 						translate(entry.x + entry.w/2, entry.y + entry.h/2)
-						let img_key = entry.tile_info[0]
-						let img_rotation = entry.tile_info[1]
+						let img_key = entry.tile_info[playerNum][0]
+						let img_rotation = entry.tile_info[playerNum][1]
 						rotate(img_rotation)
+			
 						image(tile_images[playerNum][img_key], 0,0, entry.w, entry.h)
+						// text(img_key,0,0)
 						pop()
-						
 					}
 				}
+				for (let playerNum = 0; playerNum < nPlayers; playerNum++) {
+					if (entry.enabled[playerNum]) {
+						push()
+						imageMode(CENTER);
+						angleMode(DEGREES);
+						translate(entry.x + entry.w/2, entry.y + entry.h/2)
+						let img_key = entry.tile_info[playerNum][0]
+						let img_rotation = entry.tile_info[playerNum][1]
+						rotate(img_rotation)
+						image(tile_images[playerNum][img_key], 0,0, entry.w, entry.h)
+						// text(img_key,0,0)
+						pop()
+					}
+				}
+				
+
 				
 			}
 			
@@ -351,11 +371,9 @@ function drawGrid(grid) {
 				const y = entry.y;
 
 				if (entry.key === 0) {
-					// image(grass_images[2], entry.x, entry.y, entry.w, entry.h);
 					image(key0Img, x, y, w, h);
 				}
 				if (entry.key === 1) {
-					// image(grass_images[2], entry.x, entry.y, entry.w, entry.h);
 					image(key1Img, x, y, w, h);
 				}
 				pop();
