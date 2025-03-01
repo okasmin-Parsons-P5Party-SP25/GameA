@@ -157,8 +157,15 @@ function keyPressed() {
 
 	const valid = handleMove(newRow, newCol);
 	if (valid) {
+		if(shared.grid[me.row][me.col].shared_path){ //toggle the square	
+			const maxIdx = iterateGuestsIdx(guests);
+			for (let i = 0; i < maxIdx; i++) {
+				shared.grid[me.row][me.col].enabled[i] = !shared.grid[me.row][me.col].enabled[i]
+			}
+		}
 		me.row = newRow;
 		me.col = newCol;
+
 	}
 }
 
@@ -356,7 +363,6 @@ function drawGrid(grid) {
 						let img_rotation = entry.tile_info[playerNum][1]
 						rotate(img_rotation)
 						image(tile_images[playerNum][img_key], 0,0, entry.w, entry.h)
-						// text(img_key,0,0)
 						pop()
 					}
 				}
