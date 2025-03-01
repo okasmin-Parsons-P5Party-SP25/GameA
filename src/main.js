@@ -315,13 +315,18 @@ function drawGrid(grid) {
 		for (const entry of row) {
 			//background
 			// image(grass_images[1], entry.x, entry.y, entry.w, entry.h);
+			tint(255,255)
+			blendMode(BLEND)
 			image(blue_tile, entry.x, entry.y, entry.w, entry.h);
 			
 
 			//enabled status drawing
 			if (entry.enabled.every((e) => e == false)) {
-		
 			} else {
+				if (entry.enabled.every((e) => e == true)) {
+					tint(255,100)
+	
+				}
 				for (let playerNum = 0; playerNum < nPlayers; playerNum++) {
 					if (entry.enabled[playerNum]) {
 						fill(playerColors[playerNum]);

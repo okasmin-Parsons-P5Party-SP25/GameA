@@ -1,7 +1,7 @@
 const nPlayers = 2;
 
 //constants
-const nRows = 10;
+const nRows = 6;
 const nCols = nRows;
 const gridWidth = 500;
 const gridHeight = 500;
