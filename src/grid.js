@@ -1,7 +1,7 @@
 const nPlayers = 2;
 
 //constants
-const nRows = 6;
+const nRows = 10;
 const nCols = nRows;
 const gridWidth = 500;
 const gridHeight = 500;
@@ -108,7 +108,17 @@ function createGrid() {
 				}
 			}
 		}else{
-			return ['b',90]
+			if(nbr_below){
+				return ['e',0]
+			}if(nbr_above){
+				return ['e',180]
+			}if(nbr_left){
+				return ['e',90]
+			}if(nbr_right){
+				return ['e',-90]
+			}
+			
+			
 		}
 
 	}

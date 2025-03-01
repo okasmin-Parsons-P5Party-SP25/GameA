@@ -66,7 +66,7 @@ function preload() {
 	//water tiles
 	for(let tile_mode=1; tile_mode<=3; tile_mode++){
 		let imgs={}
-		for(let tile_type of ['a', 'b', 'c','d']){
+		for(let tile_type of ['a', 'b', 'c','d', 'e']){
 			img_path = `./images/Tiles/Tiles-${tile_mode}${tile_type}.png`
 			imgs[tile_type] = loadImage(img_path);
 		}
@@ -324,7 +324,7 @@ function drawGrid(grid) {
 			if (entry.enabled.every((e) => e == false)) {
 			} else {
 				if (entry.enabled.every((e) => e == true)) {
-					tint(255,100)
+					// tint(255,100)
 	
 				}
 				for (let playerNum = 0; playerNum < nPlayers; playerNum++) {
