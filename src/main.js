@@ -10,10 +10,11 @@ let player0Img;
 let player1Img;
 let key0Img;
 let key1Img;
-let grass0Img;
-let grass1Img;
-let grass2Img;
-let grass3Img;
+
+let grass_images = []
+
+let tile_images = []
+let blue_tile;
 
 // update
 const playerColors = [
@@ -56,10 +57,24 @@ function preload() {
 	key0Img = loadImage("images/Key-Blue.png");
 	key1Img = loadImage("images/Key-Pink.png");
 
-	grass0Img = loadImage("images/Grass-0.png");
-	grass1Img = loadImage("images/Grass-1.png");
-	grass2Img = loadImage("images/Grass-2.png");
-	grass3Img = loadImage("images/Grass-3.png");
+	for(let grassImgIdx = 0; grassImgIdx<4; grassImgIdx++){
+		let grassImg = loadImage(`images/Grass-${grassImgIdx}.png`)
+		grass_images.push(grassImg)
+
+	}
+
+	//water tiles
+	for(let tile_mode=1; tile_mode<=3; tile_mode++){
+		let imgs={}
+		for(let tile_type of ['a', 'b', 'c','d', 'e']){
+			img_path = `./images/Tiles/Tiles-${tile_mode}${tile_type}.png`
+			imgs[tile_type] = loadImage(img_path);
+		}
+		tile_images.push(imgs)
+	}
+	tile_images = [tile_images[0], tile_images[2]]
+	blue_tile = loadImage(`./images/Tiles/Tiles-4.png`);
+	
 }
 
 function setup() {
@@ -77,7 +92,7 @@ function setup() {
 }
 
 function draw() {
-	image(grass3Img, 0, 0, gridWidth, gridHeight);
+	image(grass_images[2], 0, 0, gridWidth, gridHeight);
 	drawGrid(shared.grid);
 	drawPlayers(guests);
 	drawDoors();
@@ -299,43 +314,72 @@ function drawGrid(grid) {
 	for (const row of grid) {
 		for (const entry of row) {
 			//background
-			if (entry.type == "grass") {
-				fill("#BFD281");
-				// TODO vary which grass tile is shown?
-				// image(grass3Img, entry.x, entry.y, entry.w, entry.h);
+			tint(255,100)
+			if(noise(entry.x, entry.y)<.2){
+				image(grass_images[1], entry.x, entry.y, entry.w, entry.h);
+			}else if (noise(entry.x, entry.y)<.4){
+				image(grass_images[2], entry.x, entry.y, entry.w, entry.h);
+			}else if(noise(entry.x, entry.y)<.5){
+				image(grass_images[3], entry.x, entry.y, entry.w, entry.h);
+			}else{
+				image(grass_images[0], entry.x, entry.y, entry.w, entry.h);
 			}
+			
+			tint(255,255)
+			blendMode(BLEND)
 
 			//enabled status drawing
 			if (entry.enabled.every((e) => e == false)) {
-				//all false
-				// fill("black");
-				// rect(entry.x, entry.y, entry.w, entry.h);
-			} else if (entry.enabled.every((e) => e == true)) {
-				rect(entry.x, entry.y, entry.w, entry.h);
-			} else {
+			} else {	
 				for (let playerNum = 0; playerNum < nPlayers; playerNum++) {
-					if (entry.enabled[playerNum]) {
-						fill(playerColors[playerNum]);
-						rect(entry.x, entry.y, entry.w, entry.h);
+					if (entry.tile_info[playerNum] != false) {
+						push()
+						imageMode(CENTER);
+						angleMode(DEGREES);
+						translate(entry.x + entry.w/2, entry.y + entry.h/2)
+						let img_key = entry.tile_info[playerNum][0]
+						let img_rotation = entry.tile_info[playerNum][1]
+						rotate(img_rotation)
+			
+						image(tile_images[playerNum][img_key], 0,0, entry.w, entry.h)
+						// text(img_key,0,0)
+						pop()
 					}
 				}
-			}
+				for (let playerNum = 0; playerNum < nPlayers; playerNum++) {
+					if (entry.enabled[playerNum]) {
+						push()
+						imageMode(CENTER);
+						angleMode(DEGREES);
+						translate(entry.x + entry.w/2, entry.y + entry.h/2)
+						let img_key = entry.tile_info[playerNum][0]
+						let img_rotation = entry.tile_info[playerNum][1]
+						rotate(img_rotation)
+						image(tile_images[playerNum][img_key], 0,0, entry.w, entry.h)
+						// text(img_key,0,0)
+						pop()
+					}
+				}
+				
 
+				
+			}
+			
 			if (typeof entry.key === "number") {
 				push();
 				const x = entry.x;
 				const y = entry.y;
 
 				if (entry.key === 0) {
-					image(grass3Img, entry.x, entry.y, entry.w, entry.h);
 					image(key0Img, x, y, w, h);
 				}
 				if (entry.key === 1) {
-					image(grass3Img, entry.x, entry.y, entry.w, entry.h);
 					image(key1Img, x, y, w, h);
 				}
 				pop();
 			}
+
+			
 		}
 	}
 }
